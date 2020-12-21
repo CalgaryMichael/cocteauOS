@@ -1,2 +1,2 @@
-qemu-system-i386 -kernel build/kernel
+qemu-system-i386 -kernel build/os
 

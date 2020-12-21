@@ -1,23 +1,33 @@
-;;kernel.asm
-;nasm directive - 32 bit
-bits 32
-section .text
-        ;multiboot spec
-        align 4
-        dd 0x1BADB002            ;magic
-        dd 0x00                  ;flags
-        dd - (0x1BADB002 + 0x00) ;checksum. m+f+c should be zero
+;boot.asm
 
-global start
-extern boot		;boot is defined in boot.c
+MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries
+MEMINFO  equ  1 << 1            ; provide memory map
+FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
+MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
+CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
 
-start:
-  cli 			;block interrupts
-  mov esp, stack_space	;set stack pointer
-  call boot
-  hlt		 	;halt the CPU
+
+section .multiboot
+align 4
+        dd MAGIC
+        dd FLAGS
+        dd CHECKSUM
+
 
 section .bss
-resb 8192		;8KB for stack
+align 16
+resb 16384			;16KB for stack
 stack_space:
+
+
+section .text
+global _start:function (_start.end - _start)
+_start:
+	cli 			;block interrupts
+	mov esp, stack_space	;set stack pointer
+	extern boot		;boot is defined in kernel.c
+	call boot
+.hang:	hlt
+	jmp .hang
+.end:
 
