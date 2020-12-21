@@ -1,0 +1,4 @@
+nasm -f elf32 libs/boot/boot.asm -o build/boot-asm.o
+i386-elf-gcc -m32 -c libs/boot/boot.c -o build/boot-c.o
+i386-elf-ld -arch i386 -T libs/boot/link.ld -o build/kernel build/boot-asm.o build/boot-c.o
+
