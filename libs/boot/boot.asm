@@ -7,6 +7,7 @@ MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
 CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
 
 
+; Define necessary variables for this to be considered a "multiboot" by GRUB
 section .multiboot
 align 4
         dd MAGIC

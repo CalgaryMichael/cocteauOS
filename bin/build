@@ -2,8 +2,8 @@
 nasm -f elf32 libs/boot/boot.asm -o build/boot.o
 
 # build C files for booter
-i386-elf-gcc -m32 -c libs/boot/kernel.c -o build/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+i686-elf-gcc -c libs/boot/kernel.c -o build/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 
 # link the two together into an executable kernel
-i386-elf-gcc -T libs/boot/link.ld -o build/os -ffreestanding -O2 -nostdlib build/boot.o build/kernel.o 
+i686-elf-gcc -T libs/boot/link.ld -o build/os -ffreestanding -O2 -nostdlib build/boot.o build/kernel.o -lgcc
 
