@@ -59,20 +59,20 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 
 # Functions
-myos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
+cocteauOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
-	grub-file --is-x86-multiboot myos.kernel
+	grub-file --is-x86-multiboot cocteauOS.kernel
 
-install-kernel: myos.kernel
+install-kernel: cocteauOS.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)
-	cp myos.kernel $(DESTDIR)$(BOOTDIR)
+	cp cocteauOS.kernel $(DESTDIR)$(BOOTDIR)
 
 
 # Commands
-all: myos.kernel
+all: cocteauOS.kernel
 install: install-kernel
 clean:
-	rm -f myos.kernel
+	rm -f cocteauOS.kernel
 	rm -f $(OBJS) *.o */*.o */*/*.o
 	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 
