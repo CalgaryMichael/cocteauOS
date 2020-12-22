@@ -1,4 +1,7 @@
+*.o
+*.kernel
+build/*
+
 *.DS_Store
 *.swp
-build/*
 
