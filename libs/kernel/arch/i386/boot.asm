@@ -22,13 +22,19 @@ resb 16384			;16KB for stack
 stack_space:
 
 
+; Kernel entry point
 section .text
 global _start:function (_start.end - _start)
 _start:
-	cli 			;block interrupts
 	mov esp, stack_space	;set stack pointer
+
+	extern _init
+	call _init		;call global constructor
+
 	extern boot		;boot is defined in kernel.c
 	call boot
+
+	cli 			;block interrupts
 .hang:	hlt
 	jmp .hang
 .end:
