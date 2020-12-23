@@ -1,11 +1,11 @@
 DESTDIR ?=
-PREFIX ?= /Users/cm/repos/cocteauOS/build
+PREFIX ?= $(SYSROOT)
 EXEC_PREFIX ?= $(PREFIX)
 BOOTDIR ?= $(EXEC_PREFIX)/boot
 
 # Target architecture
-HOST ?= i686-elf
-HOST_ARCH := $(shell ../../bin/target-triplet-to-arch $(HOST))
+HOST ?= $(shell ../../bin/default-host)
+HOST_ARCH ?= $(shell ../../bin/target-triplet-to-arch $(HOST))
 ARCHDIR = arch/$(HOST_ARCH)
 
 include $(ARCHDIR)/make.config
@@ -13,13 +13,9 @@ include $(ARCHDIR)/make.config
 
 # Flags
 ASFLAGS := $(ASFLAGS) $(KERNEL_ARCH_ASFLAGS)
-
-CFLAGS ?= -O2 -g
 CFLAGS := $(CFLAGS) -ffreestanding -Wall -Wextra $(KERNEL_ARCH_CFLAGS)
-
 LDFLAGS := $(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
 
-LIBS ?=
 LIBS := $(LIBS) -nostdlib -lgcc $(KERNEL_ARCH_LIBS)
 
 
