@@ -1,6 +1,6 @@
 #include <kernel/tty.h>
 
-void boot(void) {
+void kmain(void) {
 	terminal_init();
 	terminal_out("Hello, kernel\n");
 }

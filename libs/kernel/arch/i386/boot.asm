@@ -31,8 +31,8 @@ _start:
 	extern _init
 	call _init		;call global constructor
 
-	extern boot		;boot is defined in kernel.c
-	call boot
+	extern kmain		;boot is defined in kernel.c
+	call kmain
 
 	cli 			;block interrupts
 .hang:	hlt
