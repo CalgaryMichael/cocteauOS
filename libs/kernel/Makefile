@@ -47,7 +47,7 @@ LINK_LIST = \
 
 # Build Rules
 .c.o:
-	$(CC) -c $< -o $@ -std=gnu99 $(CFLAGS)
+	$(CC) -c $< -o $@ -std=gnu11 $(CFLAGS)
 
 .asm.o:
 	$(AS) $(ASFLAGS) $< -o $@

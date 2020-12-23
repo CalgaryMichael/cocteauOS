@@ -2,7 +2,7 @@
 DIRNAME=$(dirname $0)
 
 # TODO: turn this into a cmd that reads folder names in ../libs/*
-PROJECTS="$DIRNAME/../libs/kernel"
+PROJECTS="$DIRNAME/../libs/kernel $DIRNAME/../libs/libc"
 
 DEFAULT_HOST=$($DIRNAME/default-host)
 export HOST=${HOST:-$DEFAULT_HOST}
