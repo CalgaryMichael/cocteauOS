@@ -1,12 +1,14 @@
 DESTDIR ?=
-PREFIX ?= $(SYSROOT)
+PREFIX ?= /usr/local
 EXEC_PREFIX ?= $(PREFIX)
 BOOTDIR ?= $(EXEC_PREFIX)/boot
+INCLUDE_DIR ?= $(PREFIX)/include
 
 # Target architecture
 HOST ?= $(shell ../../bin/default-host)
 HOST_ARCH ?= $(shell ../../bin/target-triplet-to-arch $(HOST))
 ARCHDIR = arch/$(HOST_ARCH)
+
 
 include $(ARCHDIR)/make.config
 
@@ -39,7 +41,7 @@ LINK_LIST = \
 	    $(ARCHDIR)/crtn.o \
 
 
-.PHONY: all clean install-kernel
+.PHONY: all clean install-headers install-kernel
 .SUFFIXES: .o .c .asm
 
 
@@ -59,6 +61,10 @@ cocteauOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
 	grub-file --is-x86-multiboot cocteauOS.kernel
 
+install-headers:
+	mkdir -p $(DESTDIR)$(INCLUDE_DIR)
+	cp -R include/. $(DESTDIR)$(INCLUDE_DIR)/.
+
 install-kernel: cocteauOS.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)
 	cp cocteauOS.kernel $(DESTDIR)$(BOOTDIR)
@@ -66,7 +72,7 @@ install-kernel: cocteauOS.kernel
 
 # Commands
 all: cocteauOS.kernel
-install: install-kernel
+install: install-headers install-kernel
 clean:
 	rm -f cocteauOS.kernel
 	rm -f $(OBJS) *.o */*.o */*/*.o
