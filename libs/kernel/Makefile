@@ -18,7 +18,7 @@ ASFLAGS := $(ASFLAGS) $(KERNEL_ARCH_ASFLAGS)
 CFLAGS := $(CFLAGS) -ffreestanding -Wall -Wextra $(KERNEL_ARCH_CFLAGS)
 LDFLAGS := $(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
 
-LIBS := $(LIBS) -nostdlib -lgcc $(KERNEL_ARCH_LIBS)
+LIBS := $(LIBS) -nostdlib -lk -lgcc $(KERNEL_ARCH_LIBS)
 
 
 KERNEL_OBJS = \

@@ -2,7 +2,8 @@
 DIRNAME=$(dirname $0)
 
 # TODO: turn this into a cmd that reads folder names in ../libs/*
-PROJECTS="$DIRNAME/../libs/kernel $DIRNAME/../libs/libc"
+SYSTEM_HEADER_PROJECTS="$DIRNAME/../libs/libc $DIRNAME/../libs/kernel"
+PROJECTS="$DIRNAME/../libs/libc $DIRNAME/../libs/kernel"
 
 DEFAULT_HOST=$($DIRNAME/default-host)
 export HOST=${HOST:-$DEFAULT_HOST}
@@ -17,6 +18,7 @@ export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDE_DIR=$PREFIX/include
 export SYSROOT=$(realpath "$DIRNAME/../build")
 
+export AR=${HOST}-ar
 export AS=nasm
 export CC="${HOST}-gcc --sysroot=$SYSROOT"
 export CFLAGS="-O2 -g"

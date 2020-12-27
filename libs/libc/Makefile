@@ -44,7 +44,7 @@ LIBK_OBJS=$(FREEOBJS:.o=.libk.o)
 BINARIES=libk.a
  
 .PHONY: all clean install install-headers install-libs
-.SUFFIXES: .o .libk.o .c .S
+.SUFFIXES: .o .libk.o .c
  
  
 # Build Rules
