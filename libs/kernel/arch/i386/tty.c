@@ -41,12 +41,23 @@ void terminal_init(void) {
 
 void terminal_putchar(char c) {
 	unsigned char uc = c;
-	set_buffer(uc, terminal_color, terminal_column, terminal_row);
-	if (++terminal_column == VGA_WIDTH) {
-		terminal_column = 0;
-		if (++terminal_row == VGA_HEIGHT) {
-			terminal_row = 0;
-		}
+	switch (uc) {
+		case '\n' :
+			terminal_row++;
+			terminal_column = 0;
+			break;
+		case '\t' :
+			terminal_column += 5;
+			break;
+		default :
+			set_buffer(uc, terminal_color, terminal_column, terminal_row);
+			if (++terminal_column == VGA_WIDTH) {
+				terminal_column = 0;
+				if (++terminal_row == VGA_HEIGHT) {
+					terminal_row = 0;
+				}
+			}
+			break;
 	}
 	return;
 }
