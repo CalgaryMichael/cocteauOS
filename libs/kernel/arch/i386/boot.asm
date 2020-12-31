@@ -1,4 +1,3 @@
-;boot.asm
 bits 32
 
 MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries

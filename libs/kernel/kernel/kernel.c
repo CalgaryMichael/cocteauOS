@@ -1,8 +1,12 @@
 #include <stdio.h>
+
+#include <kernel/segmentation.h>
 #include <kernel/tty.h>
 
 void kmain(void) {
 	terminal_init();
+
+	initialize_segments();
 	
 	terminal_out("Hello, kernel\n\0");
 	terminal_out("This is a new line\n\0");

@@ -23,7 +23,8 @@ LIBS := $(LIBS) -nostdlib -lk -lgcc $(KERNEL_ARCH_LIBS)
 
 KERNEL_OBJS = \
 	    $(KERNEL_ARCH_OBJS) \
-	    kernel.o \
+	    kernel/segmentation.o \
+	    kernel/kernel.o \
 
 OBJS = \
        $(ARCHDIR)/crti.o \
