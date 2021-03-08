@@ -5,6 +5,8 @@
 #include <kernel/segmentation.h>
 #include <kernel/tty.h>
 
+extern void set_gdt(uint64_t flags, size_t size);
+
 uint32_t create_flags(struct SegmentDescriptor descriptor) {
 	uint32_t flags;
         flags  = 0x00000000;
@@ -38,8 +40,7 @@ void create_descriptor(struct SegmentDescriptor descriptor) {
 
 	uint64_t output = ((uint64_t)second_dw << 32) + first_dw;
 
-	// TODO: actually call LGDT assembly function
-
+	set_gdt(output, sizeof(output));
 	return;
 }
 
