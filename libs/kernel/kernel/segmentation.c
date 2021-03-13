@@ -5,6 +5,7 @@
 #include <kernel/segmentation.h>
 #include <kernel/tty.h>
 
+// defined in arch/*/gdt.asm
 extern void set_gdt(uint64_t flags, size_t size);
 
 uint32_t create_flags(struct SegmentDescriptor descriptor) {
@@ -20,7 +21,7 @@ uint32_t create_flags(struct SegmentDescriptor descriptor) {
 	return flags;
 }
 
-void create_descriptor(struct SegmentDescriptor descriptor) {
+void create_descriptor(struct SegmentDescriptor descriptor, int verbose) {
 	uint32_t flags = create_flags(descriptor);
 
 	uint32_t first_dw;
@@ -35,8 +36,10 @@ void create_descriptor(struct SegmentDescriptor descriptor) {
 	second_dw |= descriptor.base & BASE_SECOND_DW_UPPER_MASK;                             // set base bits 31:24
 	second_dw |= descriptor.limit & LIMIT_SECOND_DW_MASK;                                 // set limit bits 19:16
 
-	printf("First DW:  0x%08x\n", first_dw);
-	printf("Second DW: 0x%08x\n", second_dw);
+	if (verbose) {
+		printf("First DW:  0x%08x\n", first_dw);
+		printf("Second DW: 0x%08x\n", second_dw);
+	}
 
 	uint64_t output = ((uint64_t)second_dw << 32) + first_dw;
 
@@ -44,9 +47,24 @@ void create_descriptor(struct SegmentDescriptor descriptor) {
 	return;
 }
 
-void initialize_gdt() {
-	terminal_out("Initializing GDT...\n");
+void null_gdt() {
+	terminal_out("Setting null GDT...\n\0");
+	struct SegmentDescriptor gdt_code_null = {
+		.base            = 0x00000000,
+		.limit           = 0x00000000,
+		.segment_type    = 0,
+		.descriptor_type = 0,
+		.privilege_level = 0,
+		.present         = 0,
+		.operation_size  = 0,
+		.granularity     = 0,
+	};
 
+	create_descriptor(gdt_code_null, 0);
+}
+
+void kernel_gdt() {
+	terminal_out("Setting Kernel level GDT...\n\0");
 	struct SegmentDescriptor gdt_code_pl0 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
@@ -54,14 +72,29 @@ void initialize_gdt() {
 		.descriptor_type = CODE_DATA,
 		.privilege_level = KERNEL,
 		.present         = IN_MEMORY,
-		.operation_size  = BITES_32,
+		.operation_size  = BITS_32,
 		.granularity     = KILOBYTE,
 	};
 	
-	create_descriptor(gdt_code_pl0);
+	struct SegmentDescriptor gdt_data_pl0 = {
+		.base            = 0x00000000,
+		.limit           = 0x000FFFFF,
+		.segment_type    = READ_WRITE,
+		.descriptor_type = CODE_DATA,
+		.privilege_level = KERNEL,
+		.present         = IN_MEMORY,
+		.operation_size  = BITS_32,
+		.granularity     = KILOBYTE,
+	};
+	
+	create_descriptor(gdt_code_pl0, 1);
+	create_descriptor(gdt_data_pl0, 1);
 }
 
 void initialize_segments() {
-	initialize_gdt();
+	null_gdt();
+	kernel_gdt();
+	//device_gdt();
+	//applications_gdt();
 }
 

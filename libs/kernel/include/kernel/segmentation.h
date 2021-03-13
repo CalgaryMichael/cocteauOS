@@ -68,8 +68,8 @@ enum Present {
 };
 
 enum OperationSize {
-	BITES_16 = 0x00,
-	BITES_32 = 0x01,
+	BITS_16 = 0x00,
+	BITS_32 = 0x01,
 };
 
 enum Granularity {
