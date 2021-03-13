@@ -87,14 +87,42 @@ void kernel_gdt() {
 		.granularity     = KILOBYTE,
 	};
 	
-	create_descriptor(gdt_code_pl0, 1);
-	create_descriptor(gdt_data_pl0, 1);
+	create_descriptor(gdt_code_pl0, 0);
+	create_descriptor(gdt_data_pl0, 0);
+}
+
+void device_gdt() {
+	terminal_out("Setting Device level GDT...\n\0");
+	struct SegmentDescriptor gdt_code_pl1 = {
+		.base            = 0x00000000,
+		.limit           = 0x000FFFFF,
+		.segment_type    = EXECUTE_READ,
+		.descriptor_type = CODE_DATA,
+		.privilege_level = DEVICE_DRIVERS_HIGH,
+		.present         = IN_MEMORY,
+		.operation_size  = BITS_32,
+		.granularity     = KILOBYTE,
+	};
+
+	struct SegmentDescriptor gdt_data_pl1 = {
+		.base            = 0x00000000,
+		.limit           = 0x000FFFFF,
+		.segment_type    = READ_WRITE,
+		.descriptor_type = CODE_DATA,
+		.privilege_level = DEVICE_DRIVERS_HIGH,
+		.present         = IN_MEMORY,
+		.operation_size  = BITS_32,
+		.granularity     = KILOBYTE,
+	};
+
+	create_descriptor(gdt_code_pl1, 1);
+	create_descriptor(gdt_data_pl1, 1);
 }
 
 void initialize_segments() {
 	null_gdt();
 	kernel_gdt();
-	//device_gdt();
+	device_gdt();
 	//applications_gdt();
 }
 
