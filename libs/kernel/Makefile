@@ -23,6 +23,7 @@ LIBS := $(LIBS) -nostdlib -lk -lgcc $(KERNEL_ARCH_LIBS)
 
 KERNEL_OBJS = \
 	    $(KERNEL_ARCH_OBJS) \
+	    kernel/debug.o \
 	    kernel/segmentation.o \
 	    kernel/kernel.o \
 
