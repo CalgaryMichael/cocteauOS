@@ -121,6 +121,8 @@ struct SegmentDescriptor {
 	uint16_t granularity;
 };
 
+typedef struct SegmentDescriptor segment_descriptor_t;
+
 void initialize_segments();
 void create_descriptor(SegmentDescriptor);
 uint32_t create_flags(SegmentDescriptor);

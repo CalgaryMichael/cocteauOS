@@ -8,7 +8,7 @@
 // defined in arch/*/gdt.asm
 extern void set_gdt(uint64_t flags, size_t size);
 
-uint32_t create_flags(struct SegmentDescriptor descriptor) {
+uint32_t create_flags(segment_descriptor_t descriptor) {
 	uint32_t flags;
         flags  = 0x00000000;
 	flags |= descriptor.segment_type << SEGMENT_TYPE_OFFSET;
@@ -21,7 +21,7 @@ uint32_t create_flags(struct SegmentDescriptor descriptor) {
 	return flags;
 }
 
-void create_descriptor(struct SegmentDescriptor descriptor, int verbose) {
+void create_descriptor(segment_descriptor_t descriptor, int verbose) {
 	uint32_t flags = create_flags(descriptor);
 
 	uint32_t first_dw;
@@ -49,7 +49,7 @@ void create_descriptor(struct SegmentDescriptor descriptor, int verbose) {
 
 void null_gdt() {
 	terminal_out("Setting null GDT...\n\0");
-	struct SegmentDescriptor gdt_code_null = {
+	segment_descriptor_t gdt_code_null = {
 		.base            = 0x00000000,
 		.limit           = 0x00000000,
 		.segment_type    = 0,
@@ -65,7 +65,7 @@ void null_gdt() {
 
 void kernel_gdt() {
 	terminal_out("Setting Kernel level GDT...\n\0");
-	struct SegmentDescriptor gdt_code_pl0 = {
+	segment_descriptor_t gdt_code_pl0 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = EXECUTE_READ,
@@ -76,7 +76,7 @@ void kernel_gdt() {
 		.granularity     = KILOBYTE,
 	};
 	
-	struct SegmentDescriptor gdt_data_pl0 = {
+	segment_descriptor_t gdt_data_pl0 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = READ_WRITE,
@@ -93,7 +93,7 @@ void kernel_gdt() {
 
 void device_gdt() {
 	terminal_out("Setting Device level GDT...\n\0");
-	struct SegmentDescriptor gdt_code_pl1 = {
+	segment_descriptor_t gdt_code_pl1 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = EXECUTE_READ,
@@ -104,7 +104,7 @@ void device_gdt() {
 		.granularity     = KILOBYTE,
 	};
 
-	struct SegmentDescriptor gdt_data_pl1 = {
+	segment_descriptor_t gdt_data_pl1 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = READ_WRITE,
@@ -121,7 +121,7 @@ void device_gdt() {
 
 void applications_gdt() {
 	terminal_out("Setting Applications level GDT...\n\0");
-	struct SegmentDescriptor gdt_code_pl1 = {
+	segment_descriptor_t gdt_code_pl1 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = EXECUTE_READ,
@@ -132,7 +132,7 @@ void applications_gdt() {
 		.granularity     = KILOBYTE,
 	};
 
-	struct SegmentDescriptor gdt_data_pl1 = {
+	segment_descriptor_t gdt_data_pl1 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = READ_WRITE,
