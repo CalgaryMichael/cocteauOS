@@ -25,6 +25,7 @@ KERNEL_OBJS = \
 	    $(KERNEL_ARCH_OBJS) \
 	    kernel/debug.o \
 	    kernel/segmentation.o \
+	    kernel/tss.o \
 	    kernel/kernel.o \
 
 OBJS = \

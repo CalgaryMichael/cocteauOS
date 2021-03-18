@@ -3,7 +3,10 @@
 #include <stdio.h>
 
 #include <kernel/segmentation.h>
+#include <kernel/tss.h>
 #include <kernel/tty.h>
+
+segment_descriptor_t gdt_entries[8];
 
 // defined in arch/*/gdt.asm
 extern void set_gdt(uint64_t flags, size_t size);
@@ -61,6 +64,7 @@ void null_gdt() {
 	};
 
 	create_descriptor(gdt_code_null, 0);
+	gdt_entries[NULL_ENTRY] = gdt_code_null;
 }
 
 void kernel_gdt() {
@@ -89,6 +93,26 @@ void kernel_gdt() {
 	
 	create_descriptor(gdt_code_pl0, 0);
 	create_descriptor(gdt_data_pl0, 0);
+
+	gdt_entries[KERNEL_CODE] = gdt_code_pl0;
+	gdt_entries[KERNEL_DATA] = gdt_data_pl0;
+}
+
+void tss_gdt() {
+	tss_entry_t tss = initialize_tss(gdt_entries[KERNEL_DATA]);
+	terminal_out("Setting TSS GDT...\n\0");
+	segment_descriptor_t tss_descriptor = {
+		.base            = (uint32_t) &tss,
+		.limit           = sizeof(tss),
+		.segment_type    = EXECUTE_ONLY_ACCESSED,
+		.descriptor_type = SYSTEM,
+		.privilege_level = KERNEL,
+		.present         = IN_MEMORY,
+		.operation_size  = BITS_16,
+		.granularity     = KILOBYTE,
+	};
+	create_descriptor(tss_descriptor, 0);
+	gdt_entries[TSS] = tss_descriptor;
 }
 
 void device_gdt() {
@@ -117,11 +141,14 @@ void device_gdt() {
 
 	create_descriptor(gdt_code_pl1, 0);
 	create_descriptor(gdt_data_pl1, 0);
+
+	gdt_entries[DEVICE_CODE] = gdt_code_pl1;
+	gdt_entries[DEVICE_DATA] = gdt_data_pl1;
 }
 
 void applications_gdt() {
 	terminal_out("Setting Applications level GDT...\n\0");
-	segment_descriptor_t gdt_code_pl1 = {
+	segment_descriptor_t gdt_code_pl3 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = EXECUTE_READ,
@@ -132,7 +159,7 @@ void applications_gdt() {
 		.granularity     = KILOBYTE,
 	};
 
-	segment_descriptor_t gdt_data_pl1 = {
+	segment_descriptor_t gdt_data_pl3 = {
 		.base            = 0x00000000,
 		.limit           = 0x000FFFFF,
 		.segment_type    = READ_WRITE,
@@ -143,13 +170,17 @@ void applications_gdt() {
 		.granularity     = KILOBYTE,
 	};
 
-	create_descriptor(gdt_code_pl1, 0);
-	create_descriptor(gdt_data_pl1, 0);
+	create_descriptor(gdt_code_pl3, 0);
+	create_descriptor(gdt_data_pl3, 0);
+
+	gdt_entries[APP_CODE] = gdt_code_pl3;
+	gdt_entries[APP_DATA] = gdt_data_pl3;
 }
 
 void initialize_segments() {
 	null_gdt();
 	kernel_gdt();
+	tss_gdt();
 	device_gdt();
 	applications_gdt();
 }

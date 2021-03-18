@@ -3,6 +3,17 @@
 
 #include <stdint.h>
 
+enum GdtEntries {
+	NULL_ENTRY,
+	KERNEL_CODE,
+	KERNEL_DATA,
+	TSS,
+	DEVICE_CODE,
+	DEVICE_DATA,
+	APP_CODE,
+	APP_DATA,
+};
+
 enum SegmentMask {
 	// first DW
 	LIMIT_FIRST_DW_MASK       = 0x0000FFFF,
