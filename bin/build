@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-. $(dirname $0)/headers
-
-for PROJECT in $PROJECTS; do
-  (cd $PROJECT && DESTDIR="$SYSROOT" $MAKE install)
-done
-
