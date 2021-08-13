@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+DIRNAME=$(dirname $0)
+GRUB_FOLDER=$DIRNAME/../build/usr/boot/grub
+
+. $DIRNAME/build
+
+echo "ISO building..."
+ 
+mkdir -p $GRUB_FOLDER
+ 
+cat > $GRUB_FOLDER/grub.cfg << EOF
+menuentry "myos" {
+	multiboot /boot/cocteauOS.kernel
+}
+EOF
+grub-mkrescue -o $GRUB_FOLDER/cocteauOS.iso $DIRNAME/../build/usr
+
+echo "ISO finished!"
+

@@ -6,7 +6,9 @@ set -e
 
 DIRNAME=$(dirname $0)
 
-. $DIRNAME/build
+. $DIRNAME/iso
+qemu-system-$HOST_ARCH -cdrom $DIRNAME/../build/usr/boot/grub/cocteauOS.iso
 
-qemu-system-$HOST_ARCH -kernel $DIRNAME/../libs/kernel/cocteauOS.kernel
+#. $DIRNAME/build
+#qemu-system-$HOST_ARCH -kernel $DIRNAME/../libs/kernel/cocteauOS.kernel
 

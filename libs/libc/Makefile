@@ -51,13 +51,16 @@ BINARIES=libk.a
 libc.a: $(OBJS)
 	$(AR) rcs $@ $(OBJS)
  
-libk.a: $(LIBK_OBJS)
+libk.a: $(info "here")
+	$(LIBK_OBJS)
 	$(AR) rcs $@ $(LIBK_OBJS)
  
 .c.o:
+	$(info "here 2")
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
  
 .c.libk.o:
+	$(info "here 3")
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
 
 

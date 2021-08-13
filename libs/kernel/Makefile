@@ -18,7 +18,7 @@ ASFLAGS := $(ASFLAGS) $(KERNEL_ARCH_ASFLAGS)
 CFLAGS := $(CFLAGS) -ffreestanding -Wall -Wextra $(KERNEL_ARCH_CFLAGS)
 LDFLAGS := $(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
 
-LIBS := $(LIBS) -nostdlib -lk -lgcc $(KERNEL_ARCH_LIBS)
+LIBS := $(LIBS) -nostdlib $(KERNEL_ARCH_LIBS)
 
 
 KERNEL_OBJS = \
@@ -61,7 +61,7 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 # Functions
 cocteauOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
-	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
+	$(CC) -B $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
 	grub-file --is-x86-multiboot cocteauOS.kernel
 
 install-headers:

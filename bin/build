@@ -2,7 +2,11 @@
 set -e
 . $(dirname $0)/headers
 
+echo "Build starting..."
+
 for PROJECT in $PROJECTS; do
   (cd $PROJECT && DESTDIR="$SYSROOT" $MAKE install)
 done
+
+echo "Build finished!"
 

@@ -2,9 +2,13 @@
 set -e
 . $(dirname $0)/config
 
+echo "Headers installing..."
+
 mkdir -p "$SYSROOT"
 
 for PROJECT in $SYSTEM_HEADER_PROJECTS; do
   (cd $PROJECT && DESTDIR="$SYSROOT" $MAKE install-headers)
 done
+
+echo "Headers finished!"
 
