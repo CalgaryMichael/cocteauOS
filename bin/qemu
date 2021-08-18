@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+DIRNAME=$(dirname 0)
+
+. $DIRNAME/bin/build
+qemu-system-i386 -kernel $DIRNAME/build/cocteauOS.kernel
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Create kernel image in Docker and copy output into the container's host
+set -e
+
+rm -f $(dirname 0)/build/cocteauOS.kernel
+
+UUID=$(uuidgen)
+
+docker build . -t calgarymichael/cocteauos:qemu-$UUID
+docker create -ti --name qemu-$UUID calgarymichael/cocteauos:qemu-$UUID bash
+docker cp qemu-$UUID:/opt/cocteauOS/build/usr/local/boot/cocteauOS.kernel build/cocteauOS.kernel
+docker rm -f qemu-$UUID
+
