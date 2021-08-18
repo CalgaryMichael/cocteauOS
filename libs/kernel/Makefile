@@ -2,9 +2,6 @@
 .SUFFIXES: .o .c .asm
 
 DESTDIR ?=
-PREFIX ?= /usr/local
-BOOTDIR ?= $(PREFIX)/boot
-
 CCFLAGS = -m32 -march=i386
 
 LIBS := $(LIBS) -nostdlib
@@ -30,6 +27,6 @@ cocteauOS.kernel: $(OBJS) linker.ld
 	grub-file --is-x86-multiboot cocteauOS.kernel
 
 install: cocteauOS.kernel
-	mkdir -p $(DESTDIR)$(BOOTDIR)
-	cp cocteauOS.kernel $(DESTDIR)$(BOOTDIR)
+	mkdir -p $(DESTDIR)
+	cp cocteauOS.kernel $(DESTDIR)
 
