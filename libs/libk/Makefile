@@ -8,7 +8,7 @@ include $(ARCHDIR)/make.config
 
 ROOTDIR ?=
 BOOTDIR ?=
-PREFIX ?= $(ROOTDIR)/usr
+PREFIX := $(ROOTDIR)/usr
 INCLUDEDIR ?= $(PREFIX)/include
 LIBDIR = $(PREFIX)/lib
 

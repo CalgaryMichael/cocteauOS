@@ -9,7 +9,7 @@ include $(ARCHDIR)/make.config
 
 ROOTDIR ?=
 BOOTDIR ?=
-PREFIX = $(ROOTDIR)/usr
+PREFIX := $(ROOTDIR)/usr
 INCLUDEDIR = $(PREFIX)/include
 
 # Flags
@@ -59,14 +59,11 @@ install-headers:
 	mkdir -p $(INCLUDEDIR)
 	cp -R include/. $(INCLUDEDIR)/.
 
-install-libk:
-	cd libk/ && $(MAKE) install
-
 install-kernel: cocteauOS.kernel
 	mkdir -p $(BOOTDIR)
 	cp cocteauOS.kernel $(BOOTDIR)
 
-install: install-headers install-libk install-kernel
+install: install-headers install-kernel
 
 
 -include $(OBJS:.o=.d)

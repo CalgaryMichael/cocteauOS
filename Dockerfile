@@ -62,7 +62,7 @@ COPY ./libs/ /opt/cocteauOS/libs/
 COPY ./artifacts/* /tmp/artifacts/
 
 # Build the kernel image
-RUN cd libs/kernel && make install
+RUN cd libs && make install
 
 # Convert the kernel image into an ISO image
 RUN cp /tmp/artifacts/grub.cfg $BOOTDIR/grub/grub.cfg
