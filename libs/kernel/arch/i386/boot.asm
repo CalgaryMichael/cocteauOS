@@ -24,6 +24,9 @@ global _start:function (_start.end - _start)
 _start:
 	mov esp, stack_space	;set stack pointer
 
+	extern _init
+	call _init		;call global constructor
+
 	extern kmain		;boot is defined in kernel.c
 	call kmain
 

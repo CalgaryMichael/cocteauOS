@@ -1,32 +1,73 @@
-.PHONY: all clean install-headers install-kernel
+HOST ?= i386
+ARCHDIR = arch/$(HOST)
+
+include $(ARCHDIR)/make.config
+
+
+.PHONY: install-headers install-libk install-kernel
 .SUFFIXES: .o .c .asm
 
-DESTDIR ?=
-CCFLAGS = -m32 -march=i386
+ROOTDIR ?=
+BOOTDIR ?=
+PREFIX = $(ROOTDIR)/usr/local
+INCLUDEDIR = $(PREFIX)/include
 
-LIBS := $(LIBS) -nostdlib
+# Flags
+CFLAGS = --sysroot=$(ROOTDIR) -isystem=$(INCLUDE_DIR) -O2 -g -ffreestanding -Wall -Wextra -march=$(HOST) $(KERNEL_ARCH_CFLAGS)
+ASFLAGS = $(KERNEL_ARCH_ASFLAGS)
+LDFLAGS = $(KERNEL_ARCH_LDFLAGS)
+
+# Obj files
+LIBS := $(LIBS) -nostdlib $(KERNEL_ARCH_LIBS)
+
+KERNEL_OBJS = \
+       $(KERNEL_ARCH_OBJS) \
+       kernel/debug.o \
+       kernel/kernel.o
 
 OBJS = \
-       boot.o \
-       kernel.o
+       $(ARCHDIR)/crti.o \
+       $(ARCHDIR)/crtbegin.o \
+       $(KERNEL_OBJS)\
+       $(ARCHDIR)/crtend.o \
+       $(ARCHDIR)/crtn.o
 
-# TODO: still need to add the "crt..." files
 LINK_LIST = \
-	    $(OBJS) \
-	    $(LIBS)
+	    $(ARCHDIR)/crti.o \
+	    $(ARCHDIR)/crtbegin.o \
+	    $(KERNEL_OBJS) \
+	    $(LIBS) \
+	    $(ARCHDIR)/crtend.o \
+	    $(ARCHDIR)/crtn.o
 
 # Build Rules
 .c.o:
-	gcc $(CCFLAGS) -c $< -o $@ -std=gnu11 -ffreestanding -Wall -Wextra
+	gcc $(CFLAGS) -c $< -o $@ -std=gnu11 
 
 .asm.o:
-	nasm -f elf32 $< -o $@
+	nasm $(ASFLAGS) $< -o $@
 
+$(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
+	OBJ=`gcc $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
+
+# Functions
 cocteauOS.kernel: $(OBJS) linker.ld
-	gcc $(CCFLAGS) -T linker.ld -o $@ $(LINK_LIST)
+	gcc $(CFLAGS) -T linker.ld -o $@ $(LINK_LIST)
 	grub-file --is-x86-multiboot cocteauOS.kernel
 
-install: cocteauOS.kernel
-	mkdir -p $(DESTDIR)
-	cp cocteauOS.kernel $(DESTDIR)
+install-headers:
+	mkdir -p $(INCLUDEDIR)
+	cp -R include/. $(INCLUDEDIR)/.
+
+install-libk:
+	cd libk/ && $(MAKE) install
+
+install-kernel: cocteauOS.kernel
+	mkdir -p $(BOOTDIR)
+	cp cocteauOS.kernel $(BOOTDIR)
+
+install: install-headers install-libk install-kernel
+
+
+-include $(OBJS:.o=.d)
 

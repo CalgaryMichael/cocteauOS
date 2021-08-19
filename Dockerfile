@@ -5,18 +5,19 @@ RUN apt-get update && apt-get install -y nasm grub2 xorriso
 
 # set up folders
 WORKDIR /opt/cocteauOS
-RUN mkdir -p libs build/boot/grub
+RUN mkdir -p libs build/root/boot/grub
 
 ENV BUILDDIR=/opt/cocteauOS/build
-ENV DESTDIR=/opt/cocteauOS/build/boot
+ENV ROOTDIR=/opt/cocteauOS/build/root
+ENV BOOTDIR=/opt/cocteauOS/build/root/boot
 
-COPY ./libs/* /opt/cocteauOS/libs/
+COPY ./libs/ /opt/cocteauOS/libs/
 COPY ./artifacts/* /tmp/artifacts/
 
 # Build the kernel image
-RUN cd libs && make install
+RUN cd libs/kernel && make install
 
 # Convert the kernel image into an ISO image
-RUN cp /tmp/artifacts/grub.cfg $DESTDIR/grub/grub.cfg
+RUN cp /tmp/artifacts/grub.cfg $BOOTDIR/grub/grub.cfg
 RUN grub-mkrescue -o $BUILDDIR/cocteauOS.iso $BUILDDIR
 
