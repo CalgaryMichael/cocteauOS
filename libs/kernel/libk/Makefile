@@ -8,12 +8,12 @@ include $(ARCHDIR)/make.config
 
 ROOTDIR ?=
 BOOTDIR ?=
-PREFIX ?= $(ROOTDIR)/usr/local
+PREFIX ?= $(ROOTDIR)/usr
 INCLUDEDIR ?= $(PREFIX)/include
 LIBDIR = $(PREFIX)/lib
 
 # Flags
-CFLAGS = --sysroot=$(ROOTDIR) -isystem=$(INCLUDEDIR) -O2 -g -ffreestanding -Wall -Wextra -march=$(HOST) $(ARCH_CFLAGS)
+CFLAGS = --sysroot=$(ROOTDIR) -isystem=$(INCLUDEDIR) -I$(INCLUDEDIR) -O2 -g -ffreestanding -Wall -Wextra $(ARCH_CFLAGS)
 CPPFLAGS = $(ARCH_CPPFLAGS)
 
 OBJS=\
@@ -33,7 +33,7 @@ libk.a: $(OBJS)
 	$(AR) rcs $@ $(OBJS)
 
 .c.o:
-	gcc -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -MD -c $< -o $@ -std=gnu11
 
 # Functions
 install-headers:
@@ -42,7 +42,7 @@ install-headers:
 
 install-libs: libk.a
 	mkdir -p $(LIBDIR)
-	cp $(BINARIES) $(LIBDIR)
+	cp libk.a $(LIBDIR)
 
 install: install-headers install-libs
 

@@ -9,16 +9,16 @@ include $(ARCHDIR)/make.config
 
 ROOTDIR ?=
 BOOTDIR ?=
-PREFIX = $(ROOTDIR)/usr/local
+PREFIX = $(ROOTDIR)/usr
 INCLUDEDIR = $(PREFIX)/include
 
 # Flags
-CFLAGS = --sysroot=$(ROOTDIR) -isystem=$(INCLUDE_DIR) -O2 -g -ffreestanding -Wall -Wextra -march=$(HOST) $(KERNEL_ARCH_CFLAGS)
+CFLAGS = --sysroot=$(ROOTDIR) -isystem=$(INCLUDEDIR) -I$(INCLUDEDIR) -O2 -g -ffreestanding -Wall -Wextra $(KERNEL_ARCH_CFLAGS)
 ASFLAGS = $(KERNEL_ARCH_ASFLAGS)
 LDFLAGS = $(KERNEL_ARCH_LDFLAGS)
 
 # Obj files
-LIBS := $(LIBS) -nostdlib $(KERNEL_ARCH_LIBS)
+LIBS := $(LIBS) -nostdlib -lgcc -lk $(KERNEL_ARCH_LIBS)
 
 KERNEL_OBJS = \
        $(KERNEL_ARCH_OBJS) \
@@ -42,17 +42,17 @@ LINK_LIST = \
 
 # Build Rules
 .c.o:
-	gcc $(CFLAGS) -c $< -o $@ -std=gnu11 
+	$(CC) $(CFLAGS) -c $< -o $@ -std=gnu11
 
 .asm.o:
-	nasm $(ASFLAGS) $< -o $@
+	$(AS) $(ASFLAGS) $< -o $@
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
-	OBJ=`gcc $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
+	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 # Functions
-cocteauOS.kernel: $(OBJS) linker.ld
-	gcc $(CFLAGS) -T linker.ld -o $@ $(LINK_LIST)
+cocteauOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
+	$(CC) $(CFLAGS) -T $(ARCHDIR)/linker.ld -o $@ $(LINK_LIST)
 	grub-file --is-x86-multiboot cocteauOS.kernel
 
 install-headers:
