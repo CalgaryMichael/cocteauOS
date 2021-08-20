@@ -6,8 +6,7 @@
 void kmain(void) {
 	terminal_init();
 	
-	terminal_out("Hello, kernel\n\n\0");
+	printf("%s\n\n", "Hello Kernel");
 	debug_output();
-	terminal_out("\n\n\0");
 }
 

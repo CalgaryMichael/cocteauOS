@@ -289,7 +289,15 @@ int printf(const char *fmt, ...) {
 	va_start(args, fmt);
 	vsprintf(printf_buf, fmt, args);
 	va_end(args);
-
-	return puts(printf_buf);
+	
+	size_t i = 0;
+	while (printf_buf[i]) {
+		int result = putchar(printf_buf[i]);
+		if (result == EOF) {
+			return EOF;
+		}
+		i++;
+	}
+	return i;
 }
 
