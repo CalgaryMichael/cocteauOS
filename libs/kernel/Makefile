@@ -26,19 +26,19 @@ KERNEL_OBJS = \
        kernel/kernel.o
 
 OBJS = \
-       $(ARCHDIR)/crti.o \
-       $(ARCHDIR)/crtbegin.o \
+       $(ARCHDIR)/boot/crti.o \
+       $(ARCHDIR)/boot/crtbegin.o \
        $(KERNEL_OBJS)\
-       $(ARCHDIR)/crtend.o \
-       $(ARCHDIR)/crtn.o
+       $(ARCHDIR)/boot/crtend.o \
+       $(ARCHDIR)/boot/crtn.o
 
 LINK_LIST = \
-	    $(ARCHDIR)/crti.o \
-	    $(ARCHDIR)/crtbegin.o \
+	    $(ARCHDIR)/boot/crti.o \
+	    $(ARCHDIR)/boot/crtbegin.o \
 	    $(KERNEL_OBJS) \
 	    $(LIBS) \
-	    $(ARCHDIR)/crtend.o \
-	    $(ARCHDIR)/crtn.o
+	    $(ARCHDIR)/boot/crtend.o \
+	    $(ARCHDIR)/boot/crtn.o
 
 # Build Rules
 .c.o:
@@ -47,7 +47,7 @@ LINK_LIST = \
 .asm.o:
 	$(AS) $(ASFLAGS) $< -o $@
 
-$(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
+$(ARCHDIR)/boot/crtbegin.o $(ARCHDIR)/boot/crtend.o:
 	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 # Functions
